@@ -13,25 +13,28 @@ class Options:
 	header          : str  = ''
 	footer          : str  = ''
 
+	file_format     : ty.Optional[str] = None
+	dir_format      : ty.Optional[str] = None
+	dir_close_format: ty.Optional[str] = None
+	root_format     : ty.Optional[str] = None
+	ellipsis_format : ty.Optional[str] = None
+
 	format_type     : ty.Union[FormatType,str] = FormatType.PLAIN
-	dir_format      : ty.Optional[str]         = None
-	dir_close_format: ty.Optional[str]         = None
-	root_format     : ty.Optional[str]         = None
-	file_format     : ty.Optional[str]         = None
-	ellipsis_format : ty.Optional[str]         = None
+	start_level     : int                      = 0
+	max_depth       : ty.Optional[int]         = 20
+	show_indent     : bool                     = True
+	indent          : str                      = ' '
+	newline         : str                      = '\n'
 
-	start_level     : int                     = 0
-	max_depth       : ty.Optional[int]        = 20
-	name_type       : ty.Union[NameType,str]  = NameType.NAME
-	root_name_type  : ty.Union[NameType,str]  = NameType.DOT
-	item_grouping   : ty.Union[GroupType,str] = GroupType.FILESFIRST
-	sort_key        : ty.Optional[_SortKey]   = None
+	show_folders    : bool                                            = True
+	show_files      : bool                                            = True
+	filter          : ty.Optional[ty.Callable[[paths.PathItem],bool]] = None
+	filter_hidden   : bool                                            = False
+	item_grouping   : ty.Union[GroupType,str]                         = GroupType.FILESFIRST
+	sort_key        : ty.Optional[_SortKey]                           = None
 
-	show_folders    : bool                   = True
-	show_files      : bool                   = True
-	show_indent     : bool                   = True
-	indent          : str                    = ' '
-	newline         : str                    = '\n'
+	name_type       : ty.Union[NameType,str] = NameType.NAME
+	root_name_type  : ty.Union[NameType,str] = NameType.DOT
 	show_size       : bool                   = False
 	show_date       : bool                   = False
 	date_type       : ty.Union[DateType,str] = DateType.NEWEST
@@ -41,9 +44,6 @@ class Options:
 	ellipsis        : str                    = '...'
 	show_hidden     : bool                   = False
 	hidden          : str                    = '*'
-
-	filter          : ty.Optional[ty.Callable[[paths.PathItem],bool]] = None
-	filter_hidden   : bool                                            = False
 
 	def _get_format(self, item_type:str) -> ty.Optional[str]:
 		format_type = _get_enum(FormatType, self.format_type)

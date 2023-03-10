@@ -15,8 +15,11 @@ def _date_to_regex(date_format:str) -> str:
 
 
 class Props(dict):
-	def __init__(self, **props):
-		super().__init__(self, **props)
+	#def __init__(self, **props):
+	#	super().__init__(self, **props)
+
+	def __repr__(self) -> str:
+		return 'Props(' + super().__repr__() + ')'
 
 	def get_depth(self, start_level:int = 0) -> ty.Optional[int]:
 		if 'depth' in self:
@@ -105,7 +108,10 @@ class Format:
 			if prop not in self.__class__._get_property:
 				raise ValueError(f'unknown property in pattern: {prop}')
 
-	def __bool__(self):
+	def __repr__(self) -> str:
+		return f'Format({self.pattern!r})'
+
+	def __bool__(self) -> bool:
 		return self.pattern != ''
 
 	def _get_props(self, item:paths.PathItem, **overrides) -> Props:
