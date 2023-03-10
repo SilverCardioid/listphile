@@ -5,6 +5,8 @@ import functools
 
 ## Enums
 
+_Enum = ty.TypeVar('Enum', bound=enum.Enum)
+
 class FormatType(enum.Enum):
 	PLAIN = 0
 	XML = 1
@@ -25,7 +27,17 @@ class GroupType(enum.Enum):
 	FOLDERSFIRST = 1
 	MIXED = 2
 
-def _enum_equals(value:ty.Union[str,enum.Enum], enum_value:enum.Enum):
+def _get_enum(enum_:ty.Type[_Enum], value:ty.Union[str,_Enum]) -> _Enum:
+	if isinstance(value, enum_):
+		return value
+	if isinstance(value, str):
+		try:
+			return enum_[value.upper()]
+		except KeyError:
+			pass
+	raise ValueError(f'Invalid {enum_.__name__} value: {value}')
+
+def _enum_equals(value:ty.Union[str,_Enum], enum_value:_Enum):
 	# value equals the enum or its string value
 	return value == enum_value or (
 	       isinstance(value, str) and value.upper() == enum_value.name)

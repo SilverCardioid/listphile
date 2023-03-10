@@ -17,17 +17,30 @@ class FileLister:
 	def __init__(self, **options):
 		self.options = config.Options()
 		self.options.__dict__.update(options)
-		formats = self.options._get_formats()
-		self._set_format(*formats)
+		self.set_formats()
 
-	def _set_format(self, dir_format:ty.Optional[str], file_format:ty.Optional[str],
-	                root_format:ty.Optional[str], ellipsis_format:ty.Optional[str],
-	                dir_close_format:ty.Optional[str]):
-		self.dir_format = dir_format and format.Format(dir_format, self.options)
-		self.file_format = file_format and format.Format(file_format, self.options)
-		self.root_format = root_format and format.Format(root_format, self.options)
-		self.ellipsis_format = ellipsis_format and format.Format(ellipsis_format, self.options)
-		self.dir_close_format = dir_close_format and format.Format(dir_close_format, self.options)
+	def set_formats(self, *, file_format:ty.Optional[str] = None,
+	                dir_format:ty.Optional[str] = None,
+	                dir_close_format:ty.Optional[str] = None,
+	                root_format:ty.Optional[str] = None,
+	                ellipsis_format:ty.Optional[str] = None):
+		fmt_args = config._Formats(
+			file=file_format, dir=dir_format, dir_close=dir_close_format,
+			root=root_format, ellipsis=ellipsis_format)
+		for item_type in config.ITEM_TYPES:
+			fmt_attr = item_type + '_format'
+			# Get input argument
+			fmt_string = getattr(fmt_args, item_type)
+			if fmt_string is not None:
+				# Update options
+				setattr(self.options, fmt_attr, fmt_string)
+			else:
+				# Get or construct format from options
+				fmt_string = self.options._get_format(item_type)
+			# Create Format object (or keep None)
+			fmt = fmt_string and format.Format(fmt_string, self.options)
+			# Set self.file_format, etc.
+			setattr(self, fmt_attr, fmt)
 
 	def dir_function(self, item:paths.PathItem, args:ty.Optional[dict] = None):
 		if item.depth == 0 and self.root_format and \
@@ -55,7 +68,7 @@ class FileLister:
 			args['file'].write(line)
 
 	def write_list(self, folder:ty.Union[PathOrStr,ty.Sequence[PathOrStr]] = '', list_path:PathOrStr = ''):
-		if isinstance(folder, PathOrStr):
+		if isinstance(folder, (Path, str, None)):
 			base_folders = [folder]
 		else: # sequence
 			base_folders = folder
