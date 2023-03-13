@@ -22,12 +22,15 @@
   <File name="compare.py"/>
   <File name="config.py"/>
   <File name="config_helpers.py"/>
+  <File name="filelist.py"/>
   <File name="format.py"/>
   <File name="paths.py"/>
   <Folder name="__pycache__">
    <File name="__init__.cpython-311.pyc"/>
+   <File name="compare.cpython-311.pyc"/>
    <File name="config.cpython-311.pyc"/>
    <File name="config_helpers.cpython-311.pyc"/>
+   <File name="filelist.cpython-311.pyc"/>
    <File name="format.cpython-311.pyc"/>
    <File name="paths.cpython-311.pyc"/>
   </Folder>

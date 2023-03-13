@@ -2,8 +2,7 @@ import os
 from pathlib import Path
 import typing as ty
 
-from . import FileLister, PathOrStr
-from . import format
+from . import format, filelist, paths
 
 class DiffItem(ty.NamedTuple):
 	diff_type:str
@@ -12,8 +11,8 @@ class DiffItem(ty.NamedTuple):
 	old_props:ty.Optional[format.Props] = None
 	new_props:ty.Optional[format.Props] = None
 
-class FileListComparer(FileLister):
-	def compare(self, old_list:PathOrStr, new_list:PathOrStr = '.', *,
+class FileListComparer(filelist.FileLister):
+	def compare(self, old_list:paths.PathOrStr, new_list:paths.PathOrStr = '.', *,
 				skip_children:bool = False, names_only:bool = True
 	            ) -> ty.Generator[DiffItem, None, None]:
 		old_gen = _get_gen(old_list)
@@ -55,7 +54,7 @@ class FileListComparer(FileLister):
 					if new_dir_depth is not None:
 						can_skip_children = True
 				new_type, new_path, new_props = next(new_gen, (None, None, None))
-				while can_skip_children and new_props.get_depth(self.options.start_;evel) > new_dir_depth:
+				while can_skip_children and new_props.get_depth(self.options.start_level) > new_dir_depth:
 					new_type, new_path, new_props = next(new_gen, (None, None, None))
 
 
@@ -92,17 +91,10 @@ class FileListComparer(FileLister):
 			return old_props['ndate'] == new_props['ndate']
 		return True
 
-def _get_gen(list_or_folder:PathOrStr):
+def _get_gen(list_or_folder:paths.PathOrStr):
 	if os.path.isdir(list_or_folder):
 		return self.generate(list_or_folder)
 	elif os.path.isfile(list_or_folder):
 		return self.parse_list(list_or_folder)
 	else:
 		raise FileNotFoundError(list_or_folder)
-
-
-
-if __name__ == '__main__':
-	flc = FileListComparer()
-	for diff_type, item_type, path in flc.compare('../filelist/filelist.txt', '..', skip_children=True):
-		print((diff_type, item_type, path))

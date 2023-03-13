@@ -7,6 +7,14 @@ import typing as ty
 
 from . import config_helpers as ch
 
+PathOrStr = ty.Union[Path, str, None]
+def _parse_path(path:PathOrStr) -> Path:
+	if not path:
+		return Path('.')
+	if isinstance(path, Path):
+		return path
+	return Path(path)
+
 class PathItem:
 	def __init__(self, basefolder:ty.Optional[Path] = None, path:ty.Optional[Path] = None,
 	             *, depth:int = 0, isdir:bool = False):
