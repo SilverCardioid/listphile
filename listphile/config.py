@@ -5,7 +5,8 @@ import typing as ty
 from . import paths
 from .config_helpers import (
 	FormatType, DateType, NameType, GroupType, _get_enum, _enum_equals,
-	_SortKey, grouped_sort_key, group_sort_key, DEFAULTSORT, GROUPED_DEFAULTSORT)
+	_SortKey, _group_keys, grouped_sort_key, group_sort_key, join_keys,
+	DEFAULTSORT, GROUPED_DEFAULTSORT)
 
 class Options:
 	rel_to_cwd      : bool = False
@@ -48,6 +49,11 @@ class Options:
 	def _get_format(self, item_type:str) -> ty.Optional[str]:
 		format_type = _get_enum(FormatType, self.format_type)
 		return _get_format_string[format_type][item_type](self)
+
+	def _get_key(self) -> _SortKey:
+		sort_key = self.sort_key or DEFAULTSORT
+		group_key = _group_keys[_get_enum(GroupType, self.item_grouping)]
+		return join_keys(group_key, sort_key)
 
 	def _get_default_extension(self) -> str:
 		if self.format_type and _enum_equals(self.format_type, FormatType.XML):

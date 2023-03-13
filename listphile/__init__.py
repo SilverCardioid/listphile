@@ -18,6 +18,7 @@ class FileLister:
 		self.options = config.Options()
 		self.options.__dict__.update(options)
 		self.set_formats()
+		self._key = None
 
 	def set_formats(self, *, file_format:ty.Optional[str] = None,
 	                dir_format:ty.Optional[str] = None,
@@ -106,6 +107,7 @@ class FileLister:
 			folder = _parse_path(folder)
 			assert folder.is_dir()
 			item = paths.PathItem(folder.absolute(), isdir=True)
+			self._key = self.options._get_key()
 
 		self.dir_function(item, args=args)
 
@@ -114,7 +116,7 @@ class FileLister:
 			self.ellipsis_function(item, args=args)
 
 		else:
-			child_items = item.children(config.grouped_sort_key(self.options.sort_key, self.options.item_grouping))
+			child_items = item.children(self._key)
 			for child_item in child_items:
 				if self.options._is_filtered(child_item):
 					continue
@@ -133,6 +135,7 @@ class FileLister:
 			folder = _parse_path(folder)
 			assert folder.is_dir()
 			item = paths.PathItem(folder.absolute(), isdir=True)
+			self._key = self.options._get_key()
 
 		if self.dir_format:
 			props = self.dir_format._get_props(item)
@@ -145,7 +148,7 @@ class FileLister:
 				yield ('ellipsis', item.path, props)
 
 		else:
-			child_items = item.children(config.grouped_sort_key(self.options.sort_key, self.options.item_grouping))
+			child_items = item.children(key=self._key)
 			for child_item in child_items:
 				if self.options._is_filtered(child_item):
 					continue

@@ -70,6 +70,8 @@ class PathItem:
 			except PermissionError: # system directory
 				pass
 
-	def children(self, sort_key:ty.Optional[ty.Callable[[PathItem], ty.Any]] = None) -> ty.List[PathItem]:
-		sort_key = sort_key or ch.GROUPED_DEFAULTSORT
-		return sorted(list(self.iterdir()), key=sort_key)
+	def children(self, key:ty.Optional[ch._SortKey] = None) -> ty.List[PathItem]:
+		if not key: key = ch.GROUPED_DEFAULTSORT
+		items = list(self.iterdir())
+		items.sort(key=key)
+		return items
