@@ -39,26 +39,26 @@ class Props(dict):
 
 	def get_path(self, item_type:ty.Optional[str] = None, parents:ty.Optional[ty.List[str]] = None, *,
 	             depth:ty.Optional[int] = None, start_level:int = 0) -> ty.Optional[str]:
+		# Get depth from properties, or else from argument (based on dir/dir_close)
+		parsed_depth = self.get_depth(start_level)
+		if parsed_depth is not None:
+			depth = parsed_depth
 		if 'relpath' in self:
 			# Update parents & return relpath
 			if item_type == 'dir' and parents is not None:
-				parents[:] = (self['relpath'].split(os.sep) if self['relpath'] != '.'
+				parents[:] = (self['relpath'].split(os.sep) if depth > 0
 				              else [])
 			return self['relpath']
 		if parents is not None:
-			parsed_depth = self.get_depth(start_level)
-			if parsed_depth is None and depth is not None:
-				# Use provided depth (based on dir/dir_close)
-				parsed_depth = depth
-			elif parsed_depth is None:
+			if depth is None:
 				# Unable to get depth; return name
 				return self.get('name', None)
 			# Update parents & return parents + name
 			if 'name' in self:
 				if item_type == 'dir':
-					parents[:] = (parents[:(parsed_depth - 1)] + [self['name']] if parsed_depth > 0
+					parents[:] = (parents[:(depth - 1)] + [self['name']] if depth > 0
 					              else [])
-				return os.path.join(*parents[:(parsed_depth - 1)], self['name'])
+				return os.path.join(*parents[:(depth - 1)], self['name'])
 		# No name or parents
 		return None
 
@@ -68,7 +68,7 @@ class Format:
 		'indent'  : lambda item, options: options.indent*(item.depth + options.start_level),
 		'level'   : lambda item, options: item.depth + options.start_level,
 		'depth'   : lambda item, options: item.depth,
-		'name'    : lambda item, options: item.path.parts[-1] if len(item.path.parts) > 0 else str(item.path),
+		'name'    : lambda item, options: item.abspath.parts[-1],
 		'relpath' : lambda item, options: str(item.path),
 		'abspath' : lambda item, options: str(item.abspath),
 		'hidden'  : lambda item, options: options.hidden if item.hidden else '',
