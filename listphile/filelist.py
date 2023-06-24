@@ -1,4 +1,5 @@
 from __future__ import annotations
+import io
 import os
 from pathlib import Path
 import typing as ty
@@ -60,12 +61,18 @@ class FileLister:
 			line = self.dir_close_format.apply(item)
 			args['file'].write(line)
 
-	def write_list(self, folder:ty.Union[paths.PathOrStr,ty.Sequence[paths.PathOrStr]] = '', list_path:paths.PathOrStr = ''):
+	def write_list(self, folder:ty.Union[paths.PathOrStr,ty.Sequence[paths.PathOrStr]] = '',
+	               list_path:ty.Union[paths.PathOrStr,ty.TextIO] = ''):
 		if isinstance(folder, (Path, str, None)):
 			base_folders = [folder]
 		else: # sequence
 			base_folders = folder
 
+		if isinstance(list_path, io.TextIOBase):
+			self._write_list(base_folders, list_path)
+			return
+
+		# else, path or string
 		list_path = paths._parse_path(list_path)
 		if not list_path.is_absolute():
 			if self.options.rel_to_cwd: # Save location relative to CWD rather than base folder
@@ -78,19 +85,22 @@ class FileLister:
 		list_file = None
 		try:
 			list_file = open(str(list_path), 'a' if self.options.append else 'w', encoding='utf-8')
-			if self.options.header:
-				list_file.write(self.options.header)
-
-			for folder in base_folders:
-				abs_folder = paths._parse_path(folder).absolute()
-				self.run_folder(abs_folder, args={'file': list_file})
-
-			if self.options.footer:
-				list_file.write(self.options.footer)
+			self._write_list(base_folders, list_file)
 
 		finally:
 			if list_file and not list_file.closed:
 				list_file.close()
+
+	def _write_list(self, folders:ty.Sequence[paths.PathOrStr], file:ty.TextIO):
+		if self.options.header:
+			file.write(self.options.header)
+
+		for folder in folders:
+			abs_folder = paths._parse_path(folder).absolute()
+			self.run_folder(abs_folder, args={'file': file})
+
+		if self.options.footer:
+			file.write(self.options.footer)
 
 	def run_folder(self, folder:paths.PathOrStr = '', *,
 	              args:ty.Optional[dict] = None, _item:ty.Optional[paths.PathItem] = None):
@@ -194,7 +204,8 @@ class FileLister:
 				yield (item_type, full_path, pts)
 
 
-def write_list(folder:ty.Union[paths.PathOrStr,ty.Sequence[paths.PathOrStr]] = '', list_path:paths.PathOrStr = '',
+def write_list(folder:ty.Union[paths.PathOrStr,ty.Sequence[paths.PathOrStr]] = '',
+               list_path:ty.Union[paths.PathOrStr,ty.TextIO] = '',
 	           options:ty.Optional[dict] = None):
 	FileLister(**(options or {})).write_list(folder, list_path)
 
