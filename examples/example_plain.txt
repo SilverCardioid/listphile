@@ -2,36 +2,18 @@
  .gitignore
  README.md
  pyproject.toml
- <.idea>
-  .gitignore
-  listphile.iml
-  misc.xml
-  modules.xml
-  workspace.xml
-  <inspectionProfiles>
-   profiles_settings.xml
  <examples>
+  example_data.xml
   example_plain.txt
   example_xml.xml
   examples.py
  <listphile>
   __init__.py
+  __main__.py
+  command_line.py
   compare.py
   config.py
   config_helpers.py
   filelist.py
   format.py
   paths.py
-  <__pycache__>
-   __init__.cpython-311.pyc
-   compare.cpython-311.pyc
-   config.cpython-311.pyc
-   config_helpers.cpython-311.pyc
-   filelist.cpython-311.pyc
-   format.cpython-311.pyc
-   paths.cpython-311.pyc
- <listphile.egg-info>
-  PKG-INFO
-  SOURCES.txt
-  dependency_links.txt
-  top_level.txt

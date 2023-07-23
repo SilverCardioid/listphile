@@ -1,0 +1,22 @@
+<Folder>
+ <File name=".gitignore" size="36" ndate="20230426230414" hash="0a90787dc3329548b2abfa8f254ed85489211055"/>
+ <File name="README.md" size="7907" ndate="20230723153904" hash="5ad30f1426c7a82650184fa996f389eb12e8c003"/>
+ <File name="pyproject.toml" size="170" ndate="20230426230414" hash="a8e4eefa5e448e7a8f02d688015f0522d331a770"/>
+ <Folder name="examples">
+  <File name="example_data.xml" size="0" ndate="20230723160622" hash="da39a3ee5e6b4b0d3255bfef95601890afd80709"/>
+  <File name="example_plain.txt" size="286" ndate="20230723160622" hash="b609446376c3ffacab3ed499079b8be599705574"/>
+  <File name="example_xml.xml" size="594" ndate="20230723160622" hash="90584ddff4f97f1f9b55e00b36b26e01f53227f5"/>
+  <File name="examples.py" size="584" ndate="20230723160540" hash="4666280ab410b3a8aac5b41943c119843d68b841"/>
+ </Folder>
+ <Folder name="listphile">
+  <File name="__init__.py" size="218" ndate="20230624011545" hash="eba81f0040f4615e67e12897afa92806155edf1f"/>
+  <File name="__main__.py" size="49" ndate="20230624011417" hash="73c1abf4048008bdede65fc5aba853b208610366"/>
+  <File name="command_line.py" size="4202" ndate="20230723153550" hash="1d8a2a6ca414642e0f2d04dab728f2cffc7dfa21"/>
+  <File name="compare.py" size="4111" ndate="20230426230414" hash="9f34efaeb17f7641221ce3cd522517fbe566f25f"/>
+  <File name="config.py" size="7382" ndate="20230723153703" hash="7b664bec03f0ddc57bd648fa9560bab6d0749fa5"/>
+  <File name="config_helpers.py" size="1913" ndate="20230426230414" hash="25c240a1e081d0146eba6a910beee2b118f6e72e"/>
+  <File name="filelist.py" size="8710" ndate="20230723160147" hash="5f85bf122eee30acc5c1787bdaebca664c912a25"/>
+  <File name="format.py" size="5046" ndate="20230426230414" hash="e1df7c6cb10a1795c00dfeea407ab63c1330db8d"/>
+  <File name="paths.py" size="2627" ndate="20230426230414" hash="6ea9c9b174c1183eca454044d156c1558c001d61"/>
+ </Folder>
+</Folder>

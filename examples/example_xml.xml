@@ -2,43 +2,21 @@
  <File name=".gitignore"/>
  <File name="README.md"/>
  <File name="pyproject.toml"/>
- <Folder name=".idea">
-  <File name=".gitignore"/>
-  <File name="listphile.iml"/>
-  <File name="misc.xml"/>
-  <File name="modules.xml"/>
-  <File name="workspace.xml"/>
-  <Folder name="inspectionProfiles">
-   <File name="profiles_settings.xml"/>
-  </Folder>
- </Folder>
  <Folder name="examples">
+  <File name="example_data.xml"/>
   <File name="example_plain.txt"/>
   <File name="example_xml.xml"/>
   <File name="examples.py"/>
  </Folder>
  <Folder name="listphile">
   <File name="__init__.py"/>
+  <File name="__main__.py"/>
+  <File name="command_line.py"/>
   <File name="compare.py"/>
   <File name="config.py"/>
   <File name="config_helpers.py"/>
   <File name="filelist.py"/>
   <File name="format.py"/>
   <File name="paths.py"/>
-  <Folder name="__pycache__">
-   <File name="__init__.cpython-311.pyc"/>
-   <File name="compare.cpython-311.pyc"/>
-   <File name="config.cpython-311.pyc"/>
-   <File name="config_helpers.cpython-311.pyc"/>
-   <File name="filelist.cpython-311.pyc"/>
-   <File name="format.cpython-311.pyc"/>
-   <File name="paths.cpython-311.pyc"/>
-  </Folder>
- </Folder>
- <Folder name="listphile.egg-info">
-  <File name="PKG-INFO"/>
-  <File name="SOURCES.txt"/>
-  <File name="dependency_links.txt"/>
-  <File name="top_level.txt"/>
  </Folder>
 </Folder>
