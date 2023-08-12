@@ -103,7 +103,7 @@ class FileLister:
 			file.write(self.options.footer)
 
 	def run_folder(self, folder:paths.PathOrStr = '', *,
-	              args:ty.Optional[dict] = None, _item:ty.Optional[paths.PathItem] = None):
+	               args:ty.Optional[dict] = None, _item:ty.Optional[paths.PathItem] = None):
 		item = _item
 		if item is None:
 			folder = paths._parse_path(folder)
@@ -146,7 +146,7 @@ class FileLister:
 			yield from self._generate(item)
 
 	def _generate(self, item:ty.Optional[paths.PathItem] = None
-	             ) -> ty.Generator[ty.Tuple[str, Path, format.Props], None, None]:
+	              ) -> ty.Generator[ty.Tuple[str, Path, format.Props], None, None]:
 		if self.dir_format:
 			props = self.dir_format._get_props(item)
 			yield ('dir', item.path, props)
@@ -173,14 +173,16 @@ class FileLister:
 			props = self.dir_close_format._get_props(item)
 			yield ('dir_close', item.path, props)
 
-	def parse_list(self, list_path:ty.Union[paths.PathOrStr,ty.TextIO]) -> ty.Generator[ty.Tuple[str, Path, format.Props], None, None]:
+	def parse_list(self, list_path:ty.Union[paths.PathOrStr,ty.TextIO]
+	               ) -> ty.Generator[ty.Tuple[str, Path, format.Props], None, None]:
 		if isinstance(list_path, io.TextIOBase):
 			yield from self._parse_list(list_path)
 		else:
 			with open(str(list_path), 'r', encoding='utf-8') as list_file:
 				yield from self._parse_list(list_file)
 
-	def _parse_list(self, list_file:ty.TextIO) -> ty.Generator[ty.Tuple[str, Path, format.Props], None, None]:
+	def _parse_list(self, list_file:ty.TextIO
+	                ) -> ty.Generator[ty.Tuple[str, Path, format.Props], None, None]:
 		# todo: match header/footer
 		depth_from_hierarchy = self.dir_format is not None and self.dir_close_format is not None
 		parents = []
@@ -214,7 +216,8 @@ class FileLister:
 				print(f'Ambiguous line/format: {line.strip()} ({match_types})')
 
 			item_type, pts = matches[0]
-			full_path = Path(pts.get_path(item_type, parents, depth=depth, start_level=self.options.start_level))
+			full_path = Path(pts.get_path(item_type, parents, depth=depth,
+				start_level=self.options.start_level, indent=self.options.indent))
 			yield (item_type, full_path, pts)
 
 

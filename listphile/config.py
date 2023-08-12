@@ -72,7 +72,7 @@ class Options:
 ITEM_TYPES = ['file', 'dir', 'dir_close', 'root', 'ellipsis']
 _Formats = collections.namedtuple('Formats', ITEM_TYPES)
 
-def _toggle_format( value:ty.Optional[str], toggle:bool,
+def _toggle_format(value:ty.Optional[str], toggle:bool,
                    default:str) -> ty.Optional[str]:
 	if value: # explicit format
 		return value

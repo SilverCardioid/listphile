@@ -21,13 +21,13 @@ class Props(dict):
 	def __repr__(self) -> str:
 		return 'Props(' + super().__repr__() + ')'
 
-	def get_depth(self, start_level:int = 0) -> ty.Optional[int]:
+	def get_depth(self, start_level:int = 0, *, indent:str = ' ') -> ty.Optional[int]:
 		if 'depth' in self:
 			return self['depth']
 		if 'level' in self:
 			return self['level'] - start_level
-		if 'indent' in self:
-			return len(self['indent']) - start_level
+		if 'indent' in self and len(indent) > 0:
+			return len(self['indent'])//len(indent) - start_level
 		return None
 
 	def get_name(self) -> ty.Optional[str]:
@@ -38,9 +38,9 @@ class Props(dict):
 		return None
 
 	def get_path(self, item_type:ty.Optional[str] = None, parents:ty.Optional[ty.List[str]] = None, *,
-	             depth:ty.Optional[int] = None, start_level:int = 0) -> ty.Optional[str]:
+	             depth:ty.Optional[int] = None, start_level:int = 0, indent:str = ' ') -> ty.Optional[str]:
 		# Get depth from properties, or else from argument (based on dir/dir_close)
-		parsed_depth = self.get_depth(start_level)
+		parsed_depth = self.get_depth(start_level, indent=indent)
 		if parsed_depth is not None:
 			depth = parsed_depth
 		if 'relpath' in self:
