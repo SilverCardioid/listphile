@@ -3,6 +3,7 @@
  README.md
  pyproject.toml
  <examples>
+  example_compare.py
   example_data.xml
   example_plain.txt
   example_xml.xml

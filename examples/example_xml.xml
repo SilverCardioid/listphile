@@ -3,6 +3,7 @@
  <File name="README.md"/>
  <File name="pyproject.toml"/>
  <Folder name="examples">
+  <File name="example_compare.py"/>
   <File name="example_data.xml"/>
   <File name="example_plain.txt"/>
   <File name="example_xml.xml"/>

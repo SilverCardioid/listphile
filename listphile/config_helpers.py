@@ -1,7 +1,9 @@
-import typing as ty
-
 import enum
 import functools
+import typing as ty
+
+if ty.TYPE_CHECKING:
+	from . import paths
 
 ## Enums
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 from datetime import datetime
 import os
 import re
+import string
 import typing as ty
 
 from . import config, paths
@@ -13,6 +14,7 @@ def _date_to_regex(date_format:str) -> str:
 	return re.sub(r'%([A-Za-z%])', lambda m: '\d+?' if m[1] in 'wdmyYHIMSfjUWuV' else '%'if m[1] == '%' else '.+?',
 	              re.escape(date_format))
 
+_formatter = string.Formatter()
 
 class Props(dict):
 	#def __init__(self, **props):
@@ -43,22 +45,37 @@ class Props(dict):
 		parsed_depth = self.get_depth(start_level, indent=indent)
 		if parsed_depth is not None:
 			depth = parsed_depth
+
 		if 'relpath' in self:
 			# Update parents & return relpath
-			if item_type == 'dir' and parents is not None:
-				parents[:] = (self['relpath'].split(os.sep) if depth > 0
-				              else [])
+			if parents is not None:
+				parent = self['relpath'].split(os.sep) if depth > 0 else []
+				if item_type in ('file', 'dir_close') and depth > 0:
+					# remove filename or step out
+					parent = parent[:(depth - 1)]
+				parents[:] = parent
 			return self['relpath']
-		if parents is not None:
-			if depth is None:
-				# Unable to get depth; return name
-				return self.get('name', None)
+
+		if parents is not None and depth is not None and 'name' in self:
 			# Update parents & return parents + name
-			if 'name' in self:
-				if item_type == 'dir':
-					parents[:] = (parents[:(depth - 1)] + [self['name']] if depth > 0
-					              else [])
-				return os.path.join(*parents[:(depth - 1)], self['name'])
+			# todo: can keep name for dir_close/ellipsis
+			path = (parents[:(depth - 1)] + [self['name']] if depth > 0
+				              else [])
+			if item_type in ('file', 'dir_close'):
+				# remove filename or step out
+				parents[:] = path[:-1]
+			else:
+				parents[:] = path
+			return os.path.join(*path) if len(path) > 0 else ''
+
+			# parent = parents[:(depth - 1)]
+			# if item_type == 'dir': # step in
+				# parents[:] = (parent + [self['name']] if depth > 0
+				              # else [])
+			# elif item_type == 'dir_close': # step out
+				# parents[:] = parent
+			# return os.path.join(*parent, self['name'])
+
 		# No name or parents
 		return None
 
@@ -85,7 +102,7 @@ class Format:
 		'name'    : lambda options: r'[^\\\/:\*\?"<>\|]+?',
 		'relpath' : lambda options: r'[^\*?"<>\|]+?',
 		'abspath' : lambda options: r'[^\*?"<>\|]+?',
-		'hidden'  : lambda options: re.escape(options.hidden),
+		'hidden'  : lambda options: '(?:' + re.escape(options.hidden) + ')?',
 		'size'    : lambda options: r'\d+?',
 		'cdate'   : lambda options: _date_to_regex(options.date_format),
 		'mdate'   : lambda options: _date_to_regex(options.date_format),
@@ -96,17 +113,21 @@ class Format:
 	def __init__(self, pattern:str, options:config.Options):
 		self.pattern = pattern
 		self._options = options
-		self.props_list = re.findall('{([^{}]+)}', self.pattern)
+		self.props_list = [field[1] for field in _formatter.parse(self.pattern) if field[1] is not None]
+		if any(prop == '' or str.isdecimal(prop) for prop in self.props_list):
+			raise ValueError("positional arguments not supported in format string")
+
 		self.props = set(self.props_list)
+		for prop in self.props:
+			if prop not in self.__class__._get_property:
+				raise ValueError(f'unknown property in pattern: {prop}')
+
 		self.regex = re.compile('^' + re.sub(
-			r'\\{([^{}]+)\\}',
+			r'\\{(\w*)[^{}]*\\}',
 			lambda m: '(' + (self.__class__._get_regex[m[1]](self._options)
 			          if m[1] in self.__class__._get_regex else '.*?') + ')',
 			re.escape(self.pattern)
 		) + '$')
-		for prop in self.props:
-			if prop not in self.__class__._get_property:
-				raise ValueError(f'unknown property in pattern: {prop}')
 
 	def __repr__(self) -> str:
 		return f'Format({self.pattern!r})'

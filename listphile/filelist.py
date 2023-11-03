@@ -6,6 +6,11 @@ import typing as ty
 
 from . import config, format, paths
 
+class ListItem(ty.NamedTuple):
+	item_type:str
+	path:Path
+	props:ty.Optional[format.Props] = None
+
 class FileLister:
 	def __init__(self, **options):
 		self.options = config.Options()
@@ -132,7 +137,7 @@ class FileLister:
 
 
 	def generate(self, folder:ty.Union[paths.PathOrStr,ty.Sequence[paths.PathOrStr]] = ''
-	             ) -> ty.Generator[ty.Tuple[str, Path, format.Props], None, None]:
+	             ) -> ty.Generator[ListItem, None, None]:
 		if isinstance(folder, (Path, str, type(None))):
 			base_folders = [folder]
 		else: # sequence
@@ -146,17 +151,17 @@ class FileLister:
 			yield from self._generate(item)
 
 	def _generate(self, item:ty.Optional[paths.PathItem] = None
-	              ) -> ty.Generator[ty.Tuple[str, Path, format.Props], None, None]:
+	              ) -> ty.Generator[ListItem, None, None]:
 		if self.dir_format:
 			props = self.dir_format._get_props(item)
-			yield ('dir', item.path, props)
+			yield ListItem('dir', item.path, props)
 
 		if (self.options.max_depth and self.options.max_depth > 0 and
 		    item.depth >= self.options.max_depth):
 			# write ellipsis without visiting folder
 			if self.ellipsis_format:
 				props = self.ellipsis_format._get_props(item)
-				yield ('ellipsis', item.path, props)
+				yield ListItem('ellipsis', item.path, props)
 
 		else:
 			child_items = item.children(key=self._key)
@@ -167,14 +172,14 @@ class FileLister:
 					yield from self._generate(child_item)
 				elif self.file_format:
 					props = self.file_format._get_props(child_item)
-					yield ('file', child_item.path, props)
+					yield ListItem('file', child_item.path, props)
 
 		if self.dir_close_format:
 			props = self.dir_close_format._get_props(item)
-			yield ('dir_close', item.path, props)
+			yield ListItem('dir_close', item.path, props)
 
 	def parse_list(self, list_path:ty.Union[paths.PathOrStr,ty.TextIO]
-	               ) -> ty.Generator[ty.Tuple[str, Path, format.Props], None, None]:
+	               ) -> ty.Generator[ListItem, None, None]:
 		if isinstance(list_path, io.TextIOBase):
 			yield from self._parse_list(list_path)
 		else:
@@ -182,7 +187,7 @@ class FileLister:
 				yield from self._parse_list(list_file)
 
 	def _parse_list(self, list_file:ty.TextIO
-	                ) -> ty.Generator[ty.Tuple[str, Path, format.Props], None, None]:
+	                ) -> ty.Generator[ListItem, None, None]:
 		# todo: match header/footer
 		depth_from_hierarchy = self.dir_format is not None and self.dir_close_format is not None
 		parents = []
@@ -218,7 +223,7 @@ class FileLister:
 			item_type, pts = matches[0]
 			full_path = Path(pts.get_path(item_type, parents, depth=depth,
 				start_level=self.options.start_level, indent=self.options.indent))
-			yield (item_type, full_path, pts)
+			yield ListItem(item_type, full_path, pts)
 
 
 def write_list(folder:ty.Union[paths.PathOrStr,ty.Sequence[paths.PathOrStr]] = '',
@@ -228,9 +233,9 @@ def write_list(folder:ty.Union[paths.PathOrStr,ty.Sequence[paths.PathOrStr]] = '
 
 def generate(folder:ty.Union[paths.PathOrStr,ty.Sequence[paths.PathOrStr]] = '',
              options:ty.Optional[dict] = None
-             ) -> ty.Generator[ty.Tuple[str, Path, format.Props], None, None]:
+             ) -> ty.Generator[ListItem, None, None]:
 	yield from FileLister(**(options or {})).generate(folder)
 
 def parse_list(list_path:ty.Union[paths.PathOrStr,ty.TextIO], options:ty.Optional[dict] = None
-               ) -> ty.Generator[ty.Tuple[str, Path, format.Props], None, None]:
+               ) -> ty.Generator[ListItem, None, None]:
 	yield from FileLister(**(options or {})).parse_list(list_path)
