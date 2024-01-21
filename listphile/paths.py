@@ -22,7 +22,7 @@ class PathItem:
 		self.path = path or Path('')
 		self.depth = depth
 		self.isdir = isdir
-		self._data = None
+		self._cache = {}
 
 	@property
 	def name(self) -> str:
@@ -34,9 +34,9 @@ class PathItem:
 
 	@property
 	def data(self) -> os.stat_result:
-		if self._data is None:
-			self._data = self.abspath.stat()
-		return self._data
+		if self._cache.get('data', None) is None:
+			self._cache['data'] = self.abspath.stat()
+		return self._cache['data']
 
 	@property
 	def hidden(self) -> bool:

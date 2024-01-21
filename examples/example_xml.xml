@@ -19,5 +19,8 @@
   <File name="filelist.py"/>
   <File name="format.py"/>
   <File name="paths.py"/>
+  <Folder name="plugins">
+   <File name="audio.py"/>
+  </Folder>
  </Folder>
 </Folder>

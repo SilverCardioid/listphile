@@ -18,3 +18,5 @@
   filelist.py
   format.py
   paths.py
+  <plugins>
+   audio.py

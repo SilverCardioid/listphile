@@ -153,3 +153,9 @@ class Format:
 			return Props(**{self.props_list[i]: val for i,val in enumerate(pts.groups())})
 		else:
 			return None
+
+_DEFAULT_REGEX = lambda options: r'.*?'
+def add_property(self, key:str, getter:ty.Callable[[paths.PathItem,config.Options],ty.Any],
+                 regex:ty.Optional[ty.Callable[[config.Options],str]] = None):
+	Format._get_property[key] = getter
+	Format._get_regex[key] = regex or _DEFAULT_REGEX

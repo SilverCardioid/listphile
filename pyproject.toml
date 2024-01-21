@@ -6,5 +6,8 @@ name = "listphile"
 version = "0.0.1"
 dependencies = []
 
+[project.optional-dependencies]
+audio = ["eyed3"]
+
 [tool.setuptools]
 packages = ["listphile"]
