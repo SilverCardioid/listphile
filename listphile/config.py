@@ -20,12 +20,13 @@ class Options:
 	root_format     : ty.Optional[str] = None
 	ellipsis_format : ty.Optional[str] = None
 
-	format_type     : ty.Union[FormatType,str] = FormatType.PLAIN
-	start_level     : int                      = 0
-	max_depth       : ty.Optional[int]         = 20
-	show_indent     : bool                     = True
-	indent          : str                      = ' '
-	newline         : str                      = '\n'
+	format_type     : ty.Union[FormatType,str]      = FormatType.PLAIN
+	start_level     : int                           = 0
+	max_depth       : ty.Optional[int]              = 20
+	show_indent     : bool                          = True
+	indent          : str                           = ' '
+	newline         : str                           = '\n'
+	properties      : ty.Optional[ty.Iterable[str]] = None
 
 	show_folders    : bool                                            = True
 	show_files      : bool                                            = True

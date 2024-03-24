@@ -118,6 +118,8 @@ class Format:
 			raise ValueError("positional arguments not supported in format string")
 
 		self.props = set(self.props_list)
+		if options.properties:
+			self.props |= set(options.properties)
 		for prop in self.props:
 			if prop not in self.__class__._get_property:
 				raise ValueError(f'unknown property in pattern: {prop}')
