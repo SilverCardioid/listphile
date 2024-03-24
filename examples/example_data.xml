@@ -1,26 +1,26 @@
 <Folder>
- <File name=".gitignore" size="36" ndate="20230426230414" hash="0a90787dc3329548b2abfa8f254ed85489211055"/>
- <File name="README.md" size="16056" ndate="20231104165140" hash="8b508a3d5b0c5a615d9c509f76e827fc9b968340"/>
+ <File name=".gitignore" size="44" ndate="20240324190910" hash="2c6e3096c0ac2083fb9f9d52a3ba55916dffb6fd"/>
+ <File name="README.md" size="16764" ndate="20240324212402" hash="bdee6ab8e6662bd0925e85b5ad442b1f98e00989"/>
  <File name="pyproject.toml" size="224" ndate="20231024140205" hash="e3a5bd19d2f14394e7ee2d0b0492dc6be9fef915"/>
  <Folder name="examples">
   <File name="example_compare.py" size="192" ndate="20230812131002" hash="97b321ae7c0968ed815dcf85cae8d3623cc4c58d"/>
-  <File name="example_data.xml" size="0" ndate="20240121230112" hash="da39a3ee5e6b4b0d3255bfef95601890afd80709"/>
-  <File name="example_plain.txt" size="334" ndate="20240121230112" hash="ccb50805046f413bbecfd99125b96907f4a240ee"/>
-  <File name="example_xml.xml" size="699" ndate="20240121230112" hash="40df5dbe6e4f820de8c21ce7fd2e5d53be65be6b"/>
-  <File name="examples.py" size="584" ndate="20230723160540" hash="4666280ab410b3a8aac5b41943c119843d68b841"/>
+  <File name="example_data.xml" size="0" ndate="20240324212502" hash="da39a3ee5e6b4b0d3255bfef95601890afd80709"/>
+  <File name="example_plain.txt" size="334" ndate="20240324212502" hash="ccb50805046f413bbecfd99125b96907f4a240ee"/>
+  <File name="example_xml.xml" size="699" ndate="20240324212502" hash="40df5dbe6e4f820de8c21ce7fd2e5d53be65be6b"/>
+  <File name="examples.py" size="593" ndate="20240324212459" hash="2cb90cc682d5e8c1a5d39b27646acdbe7879a731"/>
  </Folder>
  <Folder name="listphile">
-  <File name="__init__.py" size="315" ndate="20231107175416" hash="39995a6444f87a535bf1b52a753eb095c3ecb73b"/>
+  <File name="__init__.py" size="315" ndate="20240125001100" hash="39995a6444f87a535bf1b52a753eb095c3ecb73b"/>
   <File name="__main__.py" size="49" ndate="20230624011417" hash="73c1abf4048008bdede65fc5aba853b208610366"/>
-  <File name="command_line.py" size="5120" ndate="20230806013916" hash="91d8e8e9bbe59215597922cb8c719a374d8f7e0d"/>
+  <File name="command_line.py" size="5147" ndate="20240324202726" hash="8eea78d30cb9bb825b00bf64cbd54778c6fd59b1"/>
   <File name="compare.py" size="5280" ndate="20231111005112" hash="144926293b1c2981d8f333ea105b751a3e52c118"/>
-  <File name="config.py" size="7382" ndate="20230723153703" hash="7b664bec03f0ddc57bd648fa9560bab6d0749fa5"/>
+  <File name="config.py" size="7469" ndate="20240125000944" hash="00d8fa9085a70e52cbc3b18e961db82f752af433"/>
   <File name="config_helpers.py" size="1957" ndate="20231028014759" hash="980d705443b07ad2ce3a4ff80fc85eb01a729156"/>
   <File name="filelist.py" size="8775" ndate="20230812221942" hash="d6f74717545972cf10021672f414a5fc0cf819b1"/>
-  <File name="format.py" size="6165" ndate="20231115224328" hash="fa0c475fc4025d4026a5b2aa0f2f549f9ce45f57"/>
+  <File name="format.py" size="6233" ndate="20240123212524" hash="b017dd937e3a60f2224e7e715b07111bd316fab2"/>
   <File name="paths.py" size="2663" ndate="20231024140904" hash="a812bf73ed59bdc1895e23bd9025644b95b94d78"/>
   <Folder name="plugins">
-   <File name="audio.py" size="1145" ndate="20231115224728" hash="0ab464401fe8606c1cce183b59e0ecf4604db654"/>
+   <File name="audio.py" size="1437" ndate="20240127011304" hash="a39b0750a061f6830df83c38404b75097eb1f60e"/>
   </Folder>
  </Folder>
 </Folder>

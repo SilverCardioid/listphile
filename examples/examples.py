@@ -6,7 +6,7 @@ import listphile
 
 options = {
 	'rel_to_cwd': True,
-	'filter': lambda item: item.isdir and item.name in ('.git', 'listphile.egg-info', '__pycache__')
+	'filter': lambda item: item.isdir and item.name in ('.git', '.idea', 'listphile.egg-info', '__pycache__')
 }
 
 # Plain format, default options
