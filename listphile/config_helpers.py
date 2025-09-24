@@ -54,7 +54,7 @@ _group_keys = {
 	GroupType.FOLDERSFIRST: lambda item: not item.isdir # files 1, dirs 0
 }
 
-def join_keys(*keys:ty.Optional[_SortKey]):
+def join_keys(*keys:ty.Optional[_SortKey]) -> _SortKey:
 	return lambda item: tuple(key(item) for key in keys if key)
 
 def grouped_sort_key(sort_key:ty.Optional[_SortKey] = None,

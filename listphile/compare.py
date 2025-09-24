@@ -1,3 +1,4 @@
+import io
 import os
 from pathlib import Path
 import typing as ty
@@ -14,18 +15,20 @@ class DiffItem(ty.NamedTuple):
 	new_props:ty.Optional[format.Props] = None
 
 class FileListComparer(filelist.FileLister):
-	def compare(self, old_list:paths.PathOrStr, new_list:paths.PathOrStr = '.', *,
-				skip_children:bool = False, names_only:bool = True
+	def compare(self, old_list:ty.Union[paths.PathOrStr,ty.TextIO],
+	            new_list:ty.Union[paths.PathOrStr,ty.TextIO] = '.', *,
+	            skip_children:bool = False, names_only:bool = True
 	            ) -> ty.Generator[DiffItem, None, None]:
 		old_gen = self._get_gen(old_list)
 		new_gen = self._get_gen(new_list)
 		empty_item = ListItem(None, None, None)
+		item_grouping = ch._get_enum(ch.GroupType, self.options.item_grouping)
 
 		old = next(old_gen, empty_item)
 		new = next(new_gen, empty_item)
 
 		while old.item_type is not None or new.item_type is not None:
-			diff = self._compare_lines(old, new)
+			diff = self._compare_lines(old, new, item_grouping)
 			if diff == 0:
 				assert old.path == new.path
 				if (old.item_type == 'file' and not names_only and
@@ -63,7 +66,7 @@ class FileListComparer(filelist.FileLister):
 	def _get_depth(self, props:format.Props) -> ty.Optional[int]:
 		return props.get_depth(start_level=self.options.start_level, indent=self.options.indent)
 
-	def _compare_lines(self, old:ListItem, new:ListItem) -> int:
+	def _compare_lines(self, old:ListItem, new:ListItem, item_grouping:ch.GroupType) -> int:
 		# positive result -> addition (old list ahead, new line missing in old list)
 		# list that hasn't run out yet -> missing in other list
 		if old.item_type is None or new.item_type is None:
@@ -79,7 +82,6 @@ class FileListComparer(filelist.FileLister):
 				return 0
 		# child file before child folder (or vice versa) -> missing in other list
 		old_isdir, new_isdir = 'dir' in old.item_type, 'dir' in new.item_type
-		item_grouping = ch._get_enum(ch.GroupType, self.options.item_grouping)
 		if item_grouping != ch.GroupType.MIXED:
 			if item_grouping == ch.GroupType.FILESFIRST:
 				isdir_diff = old_isdir - new_isdir
@@ -98,7 +100,6 @@ class FileListComparer(filelist.FileLister):
 			return (new_name < old_name) - (old_name < new_name)
 		return 0
 
-
 	def _compare_files(self, old_props:format.Props, new_props:format.Props) -> bool:
 		# Return whether two files match based on their properties
 		if 'hash' in old_props and 'hash' in new_props:
@@ -111,9 +112,11 @@ class FileListComparer(filelist.FileLister):
 			return old_props['ndate'] == new_props['ndate']
 		return True
 
-	def _get_gen(self, list_or_folder:paths.PathOrStr
+	def _get_gen(self, list_or_folder:ty.Union[paths.PathOrStr,ty.TextIO]
 	             ) -> ty.Generator[ListItem, None, None]:
-		if os.path.isdir(list_or_folder):
+		if isinstance(list_or_folder, io.TextIOBase):
+			return self.parse_list(list_or_folder)
+		elif os.path.isdir(list_or_folder):
 			return self.generate(list_or_folder)
 		elif os.path.isfile(list_or_folder):
 			return self.parse_list(list_or_folder)

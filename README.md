@@ -9,6 +9,12 @@ Given one or more base folders, it recursively traverses descendant folders and 
 pip install git+https://github.com/SilverCardioid/listphile.git
 ```
 
+To include optional dependencies for audio metadata support:
+```
+pip install git+https://github.com/SilverCardioid/listphile.git[audio]
+```
+
+
 ## Usage example
 
 ### Command line
@@ -90,8 +96,8 @@ See the [examples](/examples) folder for a few more examples.
 
 #### write_list
 ```python
-listphile.write_list(folder:PathOrStr|Sequence[PathOrStr] = '',
-                     list_path:PathOrStr|TextIO = '',
+listphile.write_list(folder:str|Path|Sequence[str|Path] = '',
+                     list_path:str|Path|TextIO = '',
                      options:dict|None = None)
 ```
 Make a file list and save it to a file. Equivalent to `listphile.FileLister(**options).write_list(folder, list_path)`.
@@ -102,7 +108,7 @@ See [below](#options) for the possible options.
 
 #### generate
 ```python
-listphile.generate(folder:PathOrStr|Sequence[PathOrStr] = '',
+listphile.generate(folder:str|Path|Sequence[str|Path] = '',
                    options:dict|None = None) -> Generator[ListItem]
 ```
 A generator function yielding `ListItem`s for descendant files and folders, recursively. Equivalent to `listphile.FileLister(**options).generate(folder)`.
@@ -116,7 +122,7 @@ The included item types depend on the options; only types with non-empty formats
 
 #### parse_list
 ```python
-listphile.parse_list(list_path:PathOrStr|TextIO,
+listphile.parse_list(list_path:str|Path|TextIO,
                      options:dict|None = None) -> Generator[ListItem]
 ```
 Parse a file list that was created using the given format options line-by-line, and yield files and folders similarly to `generate()`. Equivalent to `listphile.FileLister(**options).parse_list(list_path)`.
@@ -125,10 +131,11 @@ This requires newline-separated items, and does not yet support files with heade
 
 #### compare
 ```python
-listphile.compare(old_list:PathOrStr,
-                  new_list:PathOrStr = '.', *,
+listphile.compare(old_list:str|Path|TextIO,
+                  new_list:str|Path|TextIO = '.', *,
                   skip_children:bool = False,
-                  names_only:bool = True) -> Generator[DiffItem]
+                  names_only:bool = True,
+                  options:dict|None = None) -> Generator[DiffItem]
 ```
 A generator function that matches items from the two source lists based on their folder structures, filenames and optionally properties. Equivalent to `listphile.FileListComparer(**options).compare(old_list, new_list, skip_children=skip_children, names_only=names_only)`.
 
@@ -143,7 +150,7 @@ It yields `DiffItem`s, a [NamedTuple](https://docs.python.org/3/library/typing.h
 * `old_props` ([`Props`](#helper-classes)): the properties for the old list item, or `None` for additions.
 * `new_props` (`Props`): the properties for the new list item, or `None` for deletions.
 
-Both source lists can be either a path to a file, which will be parsed as a file list using [`parse_list()`](#parse-list), or a path to a folder.
+Both source lists can be a file path or object, which will be read and parsed as a file list (see [`parse_list()`](#parse_list)), or a path to a folder to traverse the contents of.
 
 If `skip_children` is True, the contents of folders that only appear in one list will be omitted, instead of their whole subtree being included as additions or deletions. If `names_only` is False, also compare the available file properties (hash, file size and dates) for determining the `diff_type`.
 
@@ -157,10 +164,10 @@ The main class; it stores a set of formats and other options, and provides metho
 
 Methods:
 * `set_formats(*, file_format:str|None = None, dir_format:str|None = None, dir_close_format:str|None = None, root_format:str|None = None, ellipsis_format:str|None = None)`<br/>Set or reset the five [formats](#formats-properties). Each of them is replaced by the given value, or if that is None, recalculated from the [list options](#options).
-* `write_list(folder:PathOrStr|Sequence[PathOrStr] = '', list_path:PathOrStr|TextIO = '')`<br/>Write a file list to a file; see [write_list](#write_list).
-* `generate(folder:PathOrStr|Sequence[PathOrStr] = '') -> Generator[ListItem]`<br/>Recursively yield files and folders; see [generate](#generate).
-* `parse_list(list_path:PathOrStr|TextIO) -> Generator[ListItem]`<br/>Read a file list from a file; see [parse_list](#parse_list).
-* `run_folder(folder:PathOrStr = '', *, args:dict|None = None)`<br/>Traverse a single base folder and call the methods below for each file or folder, passing through a [`PathItem`](#helper-classes) and the provided `args`. By default, these methods write formatted list items to the file-like object stored in `args['file']` (this is used internally for `write_list()`). The behaviour can be customised by subclassing `FileLister` and overriding the four item methods:
+* `write_list(folder:str|Path|Sequence[str|Path] = '', list_path:str|Path|TextIO = '')`<br/>Write a file list to a file; see [write_list](#write_list).
+* `generate(folder:str|Path|Sequence[str|Path] = '') -> Generator[ListItem]`<br/>Recursively yield files and folders; see [generate](#generate).
+* `parse_list(list_path:str|Path|TextIO) -> Generator[ListItem]`<br/>Read a file list from a file; see [parse_list](#parse_list).
+* `run_folder(folder:str|Path = '', *, args:dict|None = None)`<br/>Traverse a single base folder and call the methods below for each file or folder, passing through a [`PathItem`](#helper-classes) and the provided `args`. By default, these methods write formatted list items to the file-like object stored in `args['file']` (this is used internally for `write_list()`). The behaviour can be customised by subclassing `FileLister` and overriding the four item methods:
     * `dir_function(self, item:PathItem, args:dict|None = None)`
     * `file_function(self, item:PathItem, args:dict|None = None)`
     * `ellipsis_function(self, item:PathItem, args:dict|None = None)`
@@ -171,7 +178,7 @@ Methods:
 flc = listphile.compare.FileListComparer(**options)
 ```
 A subclass of `FileLister` that adds functionality to compare lists. It has one additional method:
-* `compare(old_list:PathOrStr, new_list:PathOrStr = '.', *, skip_children:bool = False, names_only:bool = True) -> Generator[DiffItem]`<br/>Compare two filelists; see [compare](#compare).
+* `compare(old_list:str|Path|TextIO, new_list:str|Path|TextIO = '.', *, skip_children:bool = False, names_only:bool = True) -> Generator[DiffItem]`<br/>Compare two filelists; see [compare](#compare).
 
 #### Helper classes
 **`FormatType`, `NameType`, `GroupType`**: Various enum classes used in [list options](#options). Each of the relevant options also accepts a case-insensitive string instead of an actual enum value (e.g. `'plain'` instead of `FormatType.PLAIN`).
@@ -216,8 +223,32 @@ Formats use standard [format strings](https://docs.python.org/3/library/stdtypes
 * 'ndate': Newest of creation and modification date.
 * 'hash': SHA-1 hash.
 
+The `audio` plugin (see [installation](#installation)) adds the following properties:
+* 'duration': Track duration in seconds.
+* 'title': Track title.
+* 'artist': Track artist.
+* 'album': Track album.
+* 'album_artist': Track album artist.
+* 'track_num': Track number.
+* 'year': Track year.
+
+#### add_property
+Custom properties can be added statically using the top-level `add_property` function:
+
+```python
+listphile.add_property(key:str,
+                       getter:Callable[[PathItem,Options],Any]|Any = '',
+                       regex:Callable[[Options],str]|str = '.*?')
+```
+The `getter` is used to return the desired property value for each item. It can be a function taking a [`PathItem`](#helper-classes) and the current list's [`Options`](#options) with any return type, or a dummy constant value (by default, the empty string).
+
+`regex` is a [regular expression](https://docs.python.org/3/library/re.html#regular-expression-syntax) pattern string used to parse the value from a string item in [`parse_list()`](#parse_list), and defaults to matching any string. It can also be a function that takes the current `Options` and returns a pattern string. Note that capturing groups in the pattern can mess up the property matching, so any parenthesised expressions should use the non-capturing syntax `(?:  )`.
+
+Both functions are also passed the current list's [`Options`](#options).
+
+
 ### Options
-These are the allowed options for the [`FileLister`](#filelister) and shorthand functions, with supported types and default values. They are stored as attributes of an `Options` object, accessible as the `options` property on a `FileLister`. Use the lister's `set_formats()` method to update the formats after changing option values.
+These are the allowed options for the [`FileLister`](#filelister) and shorthand functions, with supported types and default values. They are passed into them as a `dict` and stored as attributes of an `Options` object, which is also accessible as the `options` property on an existing `FileLister`. Use the lister's `set_formats()` method to update the formats after changing option values.
 
 Main format strings (if None, they will be automatically constructed based on the other options; if the empty string, nothing will be printed):
 * `file_format: str|None = None`

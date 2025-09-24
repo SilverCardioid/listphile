@@ -11,7 +11,7 @@ def _fmtdate(date_format:str, time:int) -> str:
 	return datetime.fromtimestamp(time).strftime(date_format)
 
 def _date_to_regex(date_format:str) -> str:
-	return re.sub(r'%([A-Za-z%])', lambda m: '\d+?' if m[1] in 'wdmyYHIMSfjUWuV' else '%'if m[1] == '%' else '.+?',
+	return re.sub(r'%([A-Za-z%])', lambda m: '\d+?' if m[1] in 'wdmyYHIMSfjUWuV' else '%' if m[1] == '%' else '.+?',
 	              re.escape(date_format))
 
 _formatter = string.Formatter()
@@ -156,8 +156,9 @@ class Format:
 		else:
 			return None
 
-_DEFAULT_REGEX = lambda options: r'.*?'
-def add_property(self, key:str, getter:ty.Callable[[paths.PathItem,config.Options],ty.Any],
-                 regex:ty.Optional[ty.Callable[[config.Options],str]] = None):
-	Format._get_property[key] = getter
-	Format._get_regex[key] = regex or _DEFAULT_REGEX
+def add_property(key:str, getter:ty.Union[ty.Callable[[paths.PathItem,config.Options],ty.Any],ty.Any] = '',
+                 regex:ty.Union[ty.Callable[[config.Options],str],str,None] = r'.*?'):
+	Format._get_property[key] = getter if callable(getter) \
+		else lambda item, options: getter
+	Format._get_regex[key] = regex if callable(regex) \
+		else lambda options: regex

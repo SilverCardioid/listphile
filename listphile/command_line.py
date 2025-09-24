@@ -9,7 +9,7 @@ def _list_enum(e):
 	return [x.name.lower() for x in e]
 
 def main(test_args=None):
-	parser = argparse.ArgumentParser()
+	parser = argparse.ArgumentParser(prog='python -m listphile')
 	subparsers = parser.add_subparsers(dest='action', required=True)
 	options_parser = argparse.ArgumentParser(add_help=False)
 
