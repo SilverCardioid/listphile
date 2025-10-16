@@ -11,7 +11,7 @@ pip install git+https://github.com/SilverCardioid/listphile.git
 
 To include optional dependencies for audio metadata support:
 ```
-pip install git+https://github.com/SilverCardioid/listphile.git[audio]
+pip install "listphile[audio] @ git+https://github.com/SilverCardioid/listphile.git"
 ```
 
 
@@ -243,9 +243,6 @@ listphile.add_property(key:str,
 The `getter` is used to return the desired property value for each item. It can be a function taking a [`PathItem`](#helper-classes) and the current list's [`Options`](#options) with any return type, or a dummy constant value (by default, the empty string).
 
 `regex` is a [regular expression](https://docs.python.org/3/library/re.html#regular-expression-syntax) pattern string used to parse the value from a string item in [`parse_list()`](#parse_list), and defaults to matching any string. It can also be a function that takes the current `Options` and returns a pattern string. Note that capturing groups in the pattern can mess up the property matching, so any parenthesised expressions should use the non-capturing syntax `(?:  )`.
-
-Both functions are also passed the current list's [`Options`](#options).
-
 
 ### Options
 These are the allowed options for the [`FileLister`](#filelister) and shorthand functions, with supported types and default values. They are passed into them as a `dict` and stored as attributes of an `Options` object, which is also accessible as the `options` property on an existing `FileLister`. Use the lister's `set_formats()` method to update the formats after changing option values.
