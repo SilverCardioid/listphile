@@ -162,3 +162,6 @@ def add_property(key:str, getter:ty.Union[ty.Callable[[paths.PathItem,config.Opt
 		else lambda item, options: getter
 	Format._get_regex[key] = regex if callable(regex) \
 		else lambda options: regex
+
+def list_properties() -> ty.List[str]:
+	return list(Format._get_property.keys())

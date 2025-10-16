@@ -3,7 +3,7 @@ from .filelist import (FileLister, write_list, generate, parse_list)
 from .compare import (FileListComparer, compare)
 from .config_helpers import (FormatType, DateType, NameType, GroupType,
 	grouped_sort_key, group_sort_key)
-from .format import add_property
+from .format import add_property, list_properties
 
 try:
 	from .plugins import audio as _audio

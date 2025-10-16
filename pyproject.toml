@@ -3,11 +3,11 @@ requires = ["setuptools", "wheel"]
 
 [project]
 name = "listphile"
-version = "0.0.2"
+version = "0.0.3"
 dependencies = []
 
 [project.optional-dependencies]
 audio = ["eyed3"]
 
 [tool.setuptools]
-packages = ["listphile"]
+packages = ["listphile", "listphile.plugins"]
